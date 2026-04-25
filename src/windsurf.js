@@ -396,11 +396,13 @@ function buildCascadeConfig(modelEnum, modelUid, { toolPreamble, forceDefault } 
     ]);
     convParts.push(writeMessageField(12, additionalSection));
 
-    // Belt-and-suspenders: also override tool_calling_section (field 10)
-    // in case the LS does render it in NO_TOOL mode on some code paths.
+    // Belt-and-suspenders: field 10 (tool_calling_section). NO_TOOL mode
+    // suppresses this section (verified 2026-04-12), so we only write a
+    // short pointer instead of duplicating the full preamble — halving the
+    // proto payload size for large tool sets (45+ tools ≈ 40KB savings).
     const toolSection = Buffer.concat([
       writeVarintField(1, 1),             // SECTION_OVERRIDE_MODE_OVERRIDE
-      writeStringField(2, toolPreamble),
+      writeStringField(2, 'See additional_instructions_section for tool definitions.'),
     ]);
     convParts.push(writeMessageField(10, toolSection));
 

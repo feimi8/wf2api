@@ -149,6 +149,9 @@ export function buildToolPreambleForProto(tools, toolChoice, environment) {
   if (forceName) {
     lines.push(`7. You MUST call the function "${forceName}". No other function and no direct answer.`);
   }
+  const funcCount = tools.filter(t => t?.type === 'function' && t.function?.name).length;
+  const lite = funcCount > 30;
+
   lines.push('');
   lines.push('Available functions:');
   for (const t of tools) {
@@ -157,11 +160,8 @@ export function buildToolPreambleForProto(tools, toolChoice, environment) {
     lines.push('');
     lines.push(`### ${name}`);
     if (description) lines.push(description);
-    if (parameters) {
-      lines.push('Parameters:');
-      lines.push('```json');
-      lines.push(JSON.stringify(parameters, null, 2));
-      lines.push('```');
+    if (!lite && parameters) {
+      lines.push('Parameters: `' + JSON.stringify(parameters) + '`');
     }
   }
   return lines.join('\n');
