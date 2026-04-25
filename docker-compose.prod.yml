@@ -1,6 +1,6 @@
 services:
   windsurf-api:
-    image: ghcr.io/dwgx/windsurfapi:latest
+    image: ghcr.io/feimi8/wf2api:latest
     restart: unless-stopped
     init: true
     env_file:
